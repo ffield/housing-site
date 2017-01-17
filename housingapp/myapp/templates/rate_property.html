@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'myapp/styles.css' %}"  />
+
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+  <div class="nav navbar-nav">
+    <a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
+  </div>
+  <div class = "nav-inline navbar-nav float-xs-right">
+    <a class="nav-item nav-link" href ="{{user_buttons.loginButtonPath}}">{{user_buttons.loginButtonText}}</a>
+    <a class="nav-item nav-link" href="{{user_buttons.logoutButtonPath}}">{{user_buttons.logoutButtonText}}</a>
+  </div>
+</nav>
+
+
+<body class="backgroundthis">
+<form action="/{{university_tag}}/{{id}}/review" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>
+</body>

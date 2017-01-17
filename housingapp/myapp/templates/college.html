@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+{% load customTag %}
+
+
+{%block pagecontent %}
+<div class="container">
+<div class = "row">
+	<h1> Find Housing in {{university.universityTown}} </h1>
+	<P> sorting options here </P>
+	</div>
+</div>
+<div class = "container">
+<div class = "row col-md-8">
+{% if property_list %}
+    {% for property in property_list %}
+    <div class="row">
+    <div class="card card-block" style="background-color: #e3f2fd; border-color: #e3f2fd; text-color: black;">
+      <h3 class="card-title"><a href="/{{university_tag}}/{{property.id}}">{{ property.propertyAddress }}</a></h3>
+      <p class="card-text">Property Rating : {{ ratings_dictionary|get_item:property.id}}</p>
+      <p class="card-text">Landlord Rating : {{ landlord_ratings_dictionary|get_item:property.id}}</p>
+      <a href="/{{university_tag}}/{{property.id}}" class="btn btn-primary">More info</a>
+    </div>
+  </div>
+    {% endfor %}
+{% else %}
+    <p>No properties are available.</p>
+{% endif %}
+</div>
+<div class = "row col-md-4">
+</div>
+</div>
+<div class = "container">
+<div class="pagination">
+    <span class="step-links">
+        {% if properties.has_previous %}
+            <a href="?page={{ properties.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ properties.number }} of {{ properties.paginator.num_pages }}.
+        </span>
+
+        {% if contacts.has_next %}
+            <a href="?page={{ properties.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+</div>
+{%endblock%}
+

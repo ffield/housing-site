@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+
+<!-- jQuery library -->
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
+
+<!-- Latest compiled JavaScript -->
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ -->
+<!-- Latest compiled and minified CSS -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+
+<!-- {% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'myapp/styles.css' %}"  />
+ -->
+
+
+
+
+{% block pagecontent %}
+<!-- <div class = "container">
+<div class = "jumbotron">
+<form method="POST">
+<select name="item_id">
+{% for u in university_list %}
+    <option value="{{ entry.id }}">{{ u.universityName}}</option>
+{% endfor %}
+</select>
+</form>
+</div>
+</div> -->
+<div class = "container">
+<div class="jumbotron" style="margin-top: 40px">
+  <h1 class="display-3">Find Housing Here!</h1>
+  <p class="lead">Our directory is the largest on the internet.</p>
+  <hr class="my-2">
+  <p>Find your university and check out our listings!</p>
+  <p class="lead">
+    <form method="POST">
+    {% csrf_token %}
+<select name="uni_tag">
+{% for u in university_list %}
+    <option value="{{ u.universityTag }}">{{ u.universityName}}</option>
+{% endfor %}
+</select>
+<input type="submit" value="Go" />
+</form>
+  </p>
+</div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
