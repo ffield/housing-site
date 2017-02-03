@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from django.http import Http404
 from django.shortcuts import render,get_object_or_404
 from .models import Property, University, Review
-from .forms import ReviewForm, LoginForm, RegisterForm
+from .forms import ReviewForm, LoginForm, RegisterForm, SortForm
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -12,7 +12,7 @@ from django.contrib.auth import login as user_login
 from django.contrib.auth import logout as session_logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .helperClasses import UserButtons
+from .helperClasses import UserButtons, googleAPI, stringIssues
 
 # Create your views here.
 def index(request):
@@ -32,13 +32,33 @@ def index(request):
 	return render(request, 'index.html',context)
 
 def college(request, universityTag):
+	if request.method == 'POST':
+		form = SortForm(request.POST)
+        # check whether it's valid:
+	    	if form.is_valid():
+	    		sort_list = request.POST.getlist('sortBy')
+	    		print(sort_list)
+	    		return HttpResponseRedirect('/' + universityTag + '?sort=' + sort_list[0])
 	college = University.objects.get(universityTag = universityTag)
-	property_list = Property.objects.filter(propertyUniversity = college)
 	propertyRatingsDict = college.compilePropertyRatingsDict()
 	landlordRatingsDict = college.compileLandlordRatingsDict()
-	paginator = Paginator(property_list,15)
+	propertyTitlesDict = college.compilePropertyTitlesDict()
+	propertyThumbnailsDict = college.compilePropertyThumbnailURLDict()
 	page = request.GET.get('page')
+	sort = request.GET.get('sort', '')
+	print(sort)
+	if sort != '':
+		if sort == 'People':
+			property_list = Property.objects.filter(propertyUniversity = college).order_by('propertyNumPersons')
+		elif sort == 'Rooms':
+			property_list = Property.objects.filter(propertyUniversity = college).order_by('propertyNumRooms')
+		else:
+			#implement price based sorting at some point
+			property_list = Property.objects.filter(propertyUniversity = college).order_by('propertyNumPersons')
+	else:
+		property_list = Property.objects.filter(propertyUniversity = college)
 	headerButtons = UserButtons(request)
+	paginator = Paginator(property_list,15)
 	try:
 	    properties = paginator.page(page)
 	except PageNotAnInteger:
@@ -47,9 +67,9 @@ def college(request, universityTag):
 	except EmptyPage:
 	    # If page is out of range (e.g. 9999), deliver last page of results.
 	    properties = paginator.page(paginator.num_pages)
-
-	context = {'property_list': property_list,'university_tag' : universityTag,'ratings_dictionary' : propertyRatingsDict,
-	'landlord_ratings_dictionary' : landlordRatingsDict,'university':college,'properties':properties,'user_buttons':headerButtons}
+	form = SortForm()
+	context = {'form':form,'property_list': property_list,'university_tag' : universityTag,'ratings_dictionary' : propertyRatingsDict, 'titles_dictionary': propertyTitlesDict, 
+	'landlord_ratings_dictionary' : landlordRatingsDict, 'thumbnail_dict':propertyThumbnailsDict, 'university':college,'properties':properties,'user_buttons':headerButtons}
 	return render(request,'college.html',context)
 
 def detail(request, universityTag, id):
@@ -58,7 +78,10 @@ def detail(request, universityTag, id):
 	current_property = get_object_or_404(Property, pk=id)
 	reviews = Review.objects.filter(reviewProperty = current_property)
 	headerButtons = UserButtons(request)
-	context = {'property' : current_property,'university_tag' : universityTag, 'id' : id, 'reviews' : reviews, 'user_buttons':headerButtons}
+	viewURL = googleAPI.generateURL(current_property.propertyAddress, 500, 400)
+	propertyTitle = stringIssues.truncatePostComma(current_property.propertyAddress)
+	context = {'property' : current_property, 'property_title':propertyTitle,
+	'university_tag' : universityTag, 'imageURL' : viewURL, 'id' : id, 'reviews' : reviews, 'user_buttons':headerButtons}
 	return render(request, 'property.html', context)
 
 
@@ -84,7 +107,9 @@ def rate(request, universityTag, id):
 	else:
 		form = ReviewForm()
 	headerButtons = UserButtons(request)
-	return render(request, 'rate_property.html', {'form': form,'university_tag' : universityTag,'id' : id,'user_buttons':headerButtons})
+	current_property = get_object_or_404(Property, pk=id)
+	return render(request, 'rate_property.html', {'form': form,'university_tag' : universityTag,'id' : id,'property'
+		: current_property,'user_buttons':headerButtons})
 
 
 	## AUTHENTICATION VIEWS

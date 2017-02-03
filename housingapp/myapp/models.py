@@ -1,4 +1,5 @@
 from django.db import models
+from .helperClasses import stringIssues, googleAPI
 
 
 class University(models.Model):
@@ -24,6 +25,22 @@ class University(models.Model):
     		ratingList = p.compileRatings()
     		ratingDict[p.id] = ratingList[1]
     	return ratingDict
+
+    def compilePropertyTitlesDict(self):
+    	allProperties = Property.objects.filter(propertyUniversity = self)
+    	titleDict = {}
+    	for p in allProperties:
+    		title = stringIssues.truncatePostComma(p.propertyAddress)
+    		titleDict[p.id] = title
+    	return titleDict
+
+    def compilePropertyThumbnailURLDict(self):
+    	allProperties = Property.objects.filter(propertyUniversity = self)
+    	urlDict = {}
+    	for p in allProperties:
+    		viewURL = googleAPI.generateURL(p.propertyAddress, 150, 100)
+    		urlDict[p.id] = viewURL
+    	return urlDict
 
 
 
