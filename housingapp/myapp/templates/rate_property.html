@@ -15,9 +15,56 @@
 
 
 <body class="backgroundthis">
+<div class = "container">
+	{% if property  %}
+	<h1 class = "propertyHeader"> {{property.propertyAddress}} </h1>
+	<div class = "row col-md-6">
+<img src="https://maps.googleapis.com/maps/api/streetview?channel=ldp-publicrecord&location=12+Annabelle+St%2C+Newark%2C+DE+19711&size=665x441&client=gme-redfin&signature=n5d2FYv67BMFSfe2HFNy8TE7q-M=" alt="Mountain View" style="width:500px;height:400px;">
+	</div>
+	<div class = "row col-md-6">
+		<table class = "table" style = "margin-left: 10px;">
+		<tbody>
+		<tr>
+		<td>
+	<h1> Details </h1>
+	<div> {{property.propertyDescription}} </div>
+	<div> People: {{property.propertyNumPersons}} </div>
+	<div> Rooms: {{property.propertyNumRooms}} </div>
+	<div> Bath: {{property.propertyNumBaths}} </div>
+	<div> Property Rating: {{property.propertyRating}} </div>
+	<div> Landlord Rating: {{property.landlordRating}} </div>
+		</td>
+		</tr>
+		<tr>
+		<td>
+	<h1> Contact </h1>
+	<div> Property Contact info here </div>
+		</td>
+		</tr>
+		</td>
+		</tbody>
+		</table>
+		</tr>
+	</tbody>
+</table>
+</div>
+</div>
+{% endif %}	
+</div>
+<div class = "container">
 <form action="/{{university_tag}}/{{id}}/review" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% for field in form %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+        <div>{{ field.label_tag }}</div>
+        <div> {{ field }} </div>
+        {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+        {% endif %}
+    </div>
+{% endfor %}
     <input type="submit" value="Submit" />
 </form>
+</div>
 </body>

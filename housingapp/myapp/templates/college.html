@@ -9,28 +9,55 @@
 <div class="container">
 <div class = "row">
 	<h1> Find Housing in {{university.universityTown}} </h1>
-	<P> sorting options here </P>
+	<!-- <P> sorting options here </P> -->
 	</div>
 </div>
-<div class = "container">
-<div class = "row col-md-8">
+	<div class = "container">
+<!-- <form action="/{{university_tag}}/" method="post" style = "display:inline;float:right;">
+    {% csrf_token %}
+    {{ form.as_p }}
+</form> -->
+</div>
+<div class = "row">
+	<ul>
 {% if property_list %}
     {% for property in property_list %}
-    <div class="row">
-    <div class="card card-block" style="background-color: #e3f2fd; border-color: #e3f2fd; text-color: black;">
-      <h3 class="card-title"><a href="/{{university_tag}}/{{property.id}}">{{ property.propertyAddress }}</a></h3>
-      <p class="card-text">Property Rating : {{ ratings_dictionary|get_item:property.id}}</p>
-      <p class="card-text">Landlord Rating : {{ landlord_ratings_dictionary|get_item:property.id}}</p>
-      <a href="/{{university_tag}}/{{property.id}}" class="btn btn-primary">More info</a>
+    <li>
+    <div class = "container">
+    <tr>
+    <img src="{{thumbnail_dict|get_item:property.id}}"  style="width:150px;height:100px;display:inline;float:left;padding-right:10px">
+    <div class = "infoTable" style="display:block;">
+    <table>
+    <tbody>	
+	  <tr class = "row-title">	    
+      <h3 class="card-title"><a href="/{{university_tag}}/{{property.id}}">{{ titles_dictionary|get_item:property.id}}</a></h3>
+      </tr>
+      <tr>
+      <td class = "entry-table">
+      <div> People: {{property.propertyNumPersons}} </div>
+      </td>
+      <td class = "entry-table">
+      <div> Property Rating: {{ ratings_dictionary|get_item:property.id}} </div>
+      </td>
+      </tr>
+      <tr>
+      <td class = "entry-table">
+      <div> Rooms: {{property.propertyNumRooms}} </div>
+      </td>
+      <td class = "entry-table">
+      <div>Landlord Rating : {{ landlord_ratings_dictionary|get_item:property.id}}</div>
+      </td>
+      </tr>
+     </tbody>
+     </table>
     </div>
-  </div>
+    </div>
+  	</li>
     {% endfor %}
+    </ul
 {% else %}
     <p>No properties are available.</p>
 {% endif %}
-</div>
-<div class = "row col-md-4">
-</div>
 </div>
 <div class = "container">
 <div class="pagination">
