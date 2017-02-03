@@ -26,3 +26,27 @@ class StarAmount:
 	def __init__(self,rating):
 		numFullStars = int(rating)
 		numEmptyStars = 5 - numFullStars
+
+
+class googleAPI:
+    @staticmethod
+    def generateURL(address,width,height):
+        initialURL = "https://maps.googleapis.com/maps/api/streetview?"
+        key = "AIzaSyC3lmdEJprjiAlDc_xixs0DNvndamMjRYw"
+        address.replace(" ",'+')
+        initialURL = initialURL + 'location=' + address + '&'
+        sizeString = str(width) + 'x' + str(height)
+        initialURL = initialURL + 'size=' + sizeString + '&'
+        initialURL = initialURL + 'key=' + key
+        return initialURL
+
+
+class stringIssues:
+    @staticmethod
+    def truncatePostComma(address):
+        for char in range(len(address)):
+            if address[char] == ',':
+                finalWord = address[:char]
+                return finalWord
+        return address
+
